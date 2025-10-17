@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Киберполис — игровое поле</title>
+    <style>
+        :root {
+            --accent1: #00f0ff;
+            --accent2: #ff4df0;
+            --accent3: #8aff9a;
+            --accent4: #ffd36b;
+            --gap: clamp(6px, 0.6vmin, 12px);
+            --cell-size: min(12.5vmin, 160px);
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #050a10 0%, #000 100%);
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            color: #e0ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        /* === Игровое поле === */
+        .board-wrap {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(7, var(--cell-size));
+            grid-template-rows: repeat(7, var(--cell-size));
+            gap: var(--gap);
+            background: rgba(255,255,255,0.03);
+            border: 4px solid rgba(0,240,255,0.2);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0,240,255,0.25);
+            padding: var(--gap);
+            box-sizing: border-box;
+            width: calc(var(--cell-size) * 7 + var(--gap) * 8 + 2vmin);
+            height: calc(var(--cell-size) * 7 + var(--gap) * 8);
+        }
+
+        .center {
+            grid-column: 2 / span 5;
+            grid-row: 2 / span 5;
+            background: radial-gradient(circle, rgba(0,255,255,0.07), transparent 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .center h1 {
+            font-size: clamp(1.8rem, 3.5vmin, 3.6rem);
+            color: var(--accent1);
+            text-shadow: 0 0 25px var(--accent1);
+            margin: 0;
+        }
+
+        .center p {
+            color: #aaa;
+            margin-top: 10px;
+            font-size: clamp(0.8rem, 1.5vmin, 1.2rem);
+        }
+
+        .cell {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            padding: 6px;
+            position: relative;
+            transition: 0.25s;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .cell span {
+            display: block;
+            width: 90%;
+            font-size: clamp(0.65rem, 1.25vmin, 1.1rem);
+            line-height: 1.2em;
+            word-break: break-word;
+        }
+
+        .corner {
+            font-weight: 800;
+            color: #fff;
+            background: rgba(0,255,255,0.08);
+            border: 2px solid rgba(0,255,255,0.3);
+            text-transform: uppercase;
+            font-size: clamp(0.8rem, 1.3vmin, 1.1rem);
+        }
+
+        .region-top { border-top: 4px solid var(--accent1); }
+        .region-right { border-right: 4px solid var(--accent2); }
+        .region-bottom { border-bottom: 4px solid var(--accent3); }
+        .region-left { border-left: 4px solid var(--accent4); }
+
+        /* === Фишки === */
+        .token {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        /* === Кубик === */
+        .dice-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 200;
+            transition: all 0.6s ease;
+        }
+
+        .dice-container.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            animation: spin 1.3s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotateX(0) rotateY(0) scale(1); }
+            100% { transform: translate(-50%, -50%) rotateX(720deg) rotateY(720deg) scale(1); }
+        }
+
+        .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #01161b, #02343f);
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px #00f0ff, 0 0 25px rgba(0,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--accent1);
+            font-weight: bold;
+        }
+
+        .front  { transform: translateZ(50px); }
+        .back   { transform: rotateY(180deg) translateZ(50px); }
+        .right  { transform: rotateY(90deg) translateZ(50px); }
+        .left   { transform: rotateY(-90deg) translateZ(50px); }
+        .top    { transform: rotateX(90deg) translateZ(50px); }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        /* === Панель игроков === */
+        .player-panel {
+            width: 250px;
+            background: rgba(0, 20, 30, 0.6);
+            border: 2px solid rgba(0,240,255,0.3);
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,240,255,0.3);
+            padding: 15px;
+            height: 650px;
+            overflow-y: auto;
+        }
+
+        .player-panel h2 {
+            color: var(--accent1);
+            text-shadow: 0 0 12px var(--accent1);
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .player-info {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .player-info.active {
+            background: rgba(0,240,255,0.1);
+            box-shadow: 0 0 15px rgba(0,240,255,0.3);
+            transform: scale(1.05);
+        }
+
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .player-role {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .player-stats {
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="board-wrap" id="board">
+        <!-- Ячейки поля -->
+        <div class="cell corner"><span>СТАРТ</span></div>
+        <div class="cell region-top"><span>Центр связи</span></div>
+        <div class="cell region-top"><span>Техно-рынок</span></div>
+        <div class="cell region-top"><span>Кибербар</span></div>
+        <div class="cell region-top"><span>Мастерская дронов</span></div>
+        <div class="cell region-top"><span>Транслятор</span></div>
+        <div class="cell corner"><span>АНОМАЛИЯ</span></div>
+
+        <div class="cell region-left"><span>Чёрный рынок</span></div>
+        <div class="cell region-left"><span>Подполье</span></div>
+        <div class="cell region-left"><span>Ночной клуб</span></div>
+        <div class="cell region-left"><span>Генный банк</span></div>
+        <div class="cell region-left"><span>Энергоблок</span></div>
+
+        <div class="center">
+            <h1>КИБЕРПОЛИС</h1>
+            <p>Город, где нет друзей — есть ресурсы</p>
+        </div>
+
+        <div class="cell region-right"><span>Сеть хакеров</span></div>
+        <div class="cell region-right"><span>Убежище</span></div>
+        <div class="cell region-right"><span>Фабрика синт-органов</span></div>
+        <div class="cell region-right"><span>Лаборатория ИИ</span></div>
+        <div class="cell region-right"><span>Завод корпорации</span></div>
+
+        <div class="cell corner"><span>СЕКРЕТНАЯ МИССИЯ</span></div>
+        <div class="cell region-bottom"><span>Пригород</span></div>
+        <div class="cell region-bottom"><span>Заброшенная станция</span></div>
+        <div class="cell region-bottom"><span>Пустошь</span></div>
+        <div class="cell region-bottom"><span>Караван</span></div>
+        <div class="cell region-bottom"><span>Станция топлива</span></div>
+        <div class="cell corner"><span>СЛУЧАЙ</span></div>
+    </div>
+
+    <!-- Панель игроков -->
+    <div class="player-panel" id="playerPanel">
+        <h2>Игроки</h2>
+        <div id="playersList"></div>
+    </div>
+
+    <!-- Кубик -->
+    <div class="dice-container" id="dice">
+        <div class="face front">1</div>
+        <div class="face back">2</div>
+        <div class="face right">3</div>
+        <div class="face left">4</div>
+        <div class="face top">5</div>
+        <div class="face bottom">6</div>
+    </div>
+</div>
+
+<script>
+    const storedPlayers = JSON.parse(localStorage.getItem("players")) || [
+        {name: "Игрок 1", role: "Хакер", color: "#00f0ff"},
+        {name: "Игрок 2", role: "Корпорат", color: "#ff4df0"}
+    ];
+
+    const playerCount = storedPlayers.length;
+    const board = document.getElementById("board");
+    const playersList = document.getElementById("playersList");
+    const boardCells = Array.from(document.querySelectorAll(".cell"));
+
+    let currentPlayer = 0;
+    let playerPositions = new Array(playerCount).fill(0);
+
+    // === маршрут по часовой стрелке ===
+    function getBoardPath() {
+        const cells = Array.from(document.querySelectorAll(".cell"));
+        const top = cells.slice(0, 7);
+        const right = [cells[13], cells[14], cells[15], cells[16], cells[17]];
+        const bottom = cells.slice(18, 25).reverse();
+        const left = [cells[12], cells[11], cells[10], cells[9], cells[8]];
+        return [...top, ...right, ...bottom, ...left];
+    }
+
+    const boardPath = getBoardPath();
+    const totalCells = boardPath.length;
+
+    // === Создание фишек ===
+    const tokens = storedPlayers.map((p, i) => {
+        const t = document.createElement("div");
+        t.className = "token";
+        t.style.background = p.color;
+        t.style.boxShadow = `0 0 15px ${p.color}`;
+        t.dataset.playerName = p.name;
+        board.appendChild(t);
+        placeToken(t, 0, i);
+        return t;
+    });
+
+    function placeToken(token, cellIndex, offsetIndex = 0) {
+        const cell = boardPath[cellIndex];
+        const rect = cell.getBoundingClientRect();
+        const bRect = board.getBoundingClientRect();
+        const offset = offsetIndex * 30;
+        token.style.left = `${rect.left - bRect.left + 15 + offset}px`;
+        token.style.top = `${rect.top - bRect.top + 15 + offset}px`;
+    }
+
+    // === Панель игроков ===
+    function updatePlayerPanel() {
+        playersList.innerHTML = "";
+        storedPlayers.forEach((p, i) => {
+            const div = document.createElement("div");
+            div.className = "player-info" + (i === currentPlayer ? " active" : "");
+            div.innerHTML = `
+                <div class="player-name" style="color:${p.color}">${p.name}</div>
+                <div class="player-role">${p.role}</div>
+                <div class="player-stats">
+                    💠 Кредиты: 1000<br>
+                    🏙 Районы: 0<br>
+                    ⚡ Влияние: 0
+                </div>
+            `;
+            playersList.appendChild(div);
+        });
+    }
+    updatePlayerPanel();
+
+    // === Кубик ===
+    let lastTouch = 0;
+
+    function rollDice() {
+        const dice = document.getElementById("dice");
+        dice.classList.remove("show");
+        void dice.offsetWidth;
+        dice.classList.add("show");
+
+        const value = Math.floor(Math.random() * 6) + 1;
+
+        setTimeout(() => {
+            animateMove(currentPlayer, value);
+        }, 1300);
+
+        setTimeout(() => dice.classList.remove("show"), 2600);
+    }
+
+    // === Плавное движение по ячейкам ===
+    function animateMove(playerIndex, steps) {
+        let stepsDone = 0;
+        const interval = setInterval(() => {
+            playerPositions[playerIndex] = (playerPositions[playerIndex] + 1) % totalCells;
+            const nextCell = playerPositions[playerIndex];
+            placeToken(tokens[playerIndex], nextCell, playerIndex);
+            stepsDone++;
+            if (stepsDone >= steps) {
+                clearInterval(interval);
+                currentPlayer = (currentPlayer + 1) % playerCount;
+                updatePlayerPanel();
+            }
+        }, 500);
+    }
+
+    // === События броска ===
+    document.addEventListener("dblclick", rollDice);
+    document.addEventListener("touchend", (e) => {
+        const now = Date.now();
+        if (now - lastTouch <= 400) {
+            rollDice();
+            e.preventDefault();
+        }
+        lastTouch = now;
+    });
+</script>
+</body>
+</html>

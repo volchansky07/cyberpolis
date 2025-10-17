@@ -1,0 +1,308 @@
+/* Киберпанковый стиль */
+body {
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+    color: #00ffff;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 255, 255, 0.1);
+    border-bottom: 2px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+h1 {
+    font-size: 3em;
+    text-shadow: 0 0 10px #00ffff;
+    margin: 0;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+button {
+    background: #00ffff;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+}
+
+button:hover {
+    background: #00cccc;
+    box-shadow: 0 0 20px #00ffff;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00ffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+h2 {
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+p {
+    line-height: 1.6;
+}
+
+/* Игровое поле */
+#board-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 10px;
+    width: 700px;
+    height: 700px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.03);
+    border: 4px solid rgba(0,240,255,0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(0,240,255,0.25);
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#board {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.cell {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+    padding: 6px;
+    position: relative;
+    transition: 0.25s;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.cell span {
+    display: block;
+    width: 90%;
+    font-size: 0.8em;
+    line-height: 1.2em;
+    word-break: break-word;
+}
+
+.cell:hover {
+    background: rgba(0,255,255,0.1);
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
+}
+
+.cell.selected {
+    background: rgba(0, 255, 255, 0.5);
+    border-color: #00ffff;
+    box-shadow: 0 0 15px #00ffff;
+    animation: pulse 1s infinite;
+}
+
+.center {
+    grid-column: 2 / span 5;
+    grid-row: 2 / span 5;
+    background: radial-gradient(circle, rgba(0,255,255,0.07), transparent 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.center h1 {
+    font-size: 2em;
+    color: #00ffff;
+    text-shadow: 0 0 25px #00ffff;
+    margin: 0;
+}
+
+.center p {
+    color: #aaa;
+    margin-top: 10px;
+    font-size: 0.8em;
+}
+
+.corner {
+    font-weight: 800;
+    color: #fff;
+    background: rgba(0,255,255,0.08);
+    border: 2px solid rgba(0,255,255,0.3);
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.region-top { border-top: 4px solid #00f0ff; }
+.region-right { border-right: 4px solid #ff4df0; }
+.region-bottom { border-bottom: 4px solid #8aff9a; }
+.region-left { border-left: 4px solid #ffd36b; }
+
+.player-piece {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid white;
+    transition: all 0.5s ease;
+    box-shadow: 0 0 12px currentColor;
+    z-index: 10;
+}
+
+.player-piece.moving {
+    animation: move 0.5s ease;
+}
+
+@keyframes move {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+#dice-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 20px;
+    z-index: 5;
+}
+
+.dice {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 255, 255, 0.1);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    transition: all 0.1s;
+}
+
+.dice.rolling {
+    animation: roll 0.1s infinite;
+}
+
+@keyframes roll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 15px #00ffff; }
+    50% { box-shadow: 0 0 25px #00ffff; }
+    100% { box-shadow: 0 0 15px #00ffff; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+#player-info {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Анимации */
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.glitch {
+    animation: glitch 0.3s infinite;
+}
+
+#missions {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#missions-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#missions-list li {
+    background: rgba(0, 255, 255, 0.1);
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #00ffff;
+}

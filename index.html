@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Киберполис — Главная</title>
+    <style>
+        :root {
+            --accent1: #00f0ff;
+            --accent2: #ff4df0;
+            --accent3: #8aff9a;
+            --accent4: #ffd36b;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #050a10 0%, #000 100%);
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            color: #e0ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .splash {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px;
+        }
+
+        .title {
+            font-size: clamp(3rem, 8vmin, 6rem);
+            color: var(--accent1);
+            text-shadow: 0 0 50px var(--accent1);
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vmin, 1.5rem);
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .play-button {
+            background: linear-gradient(145deg, #01161b, #02343f);
+            border: 2px solid var(--accent1);
+            border-radius: 15px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(0,240,255,0.4);
+        }
+
+        .play-button:hover {
+            background: var(--accent1);
+            color: #000;
+            box-shadow: 0 0 40px rgba(0,240,255,0.8);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="splash">
+        <h1 class="title">КИБЕРПОЛИС</h1>
+        <p class="subtitle">Город, где нет друзей — есть ресурсы</p>
+        <button class="play-button" onclick="window.location.href='menu.html'">Играть</button>
+    </div>
+</body>
+</html>

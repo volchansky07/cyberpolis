@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Киберполис — Лобби</title>
+    <style>
+        :root {
+            --accent1: #00f0ff;
+            --accent2: #ff4df0;
+            --accent3: #8aff9a;
+            --accent4: #ffd36b;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #050a10 0%, #000 100%);
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            color: #e0ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .lobby {
+            max-width: 800px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vmin, 4rem);
+            color: var(--accent1);
+            text-shadow: 0 0 30px var(--accent1);
+            margin-bottom: 30px;
+        }
+
+        .player-setup {
+            margin-bottom: 30px;
+        }
+
+        .player-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .player-input input {
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid var(--accent1);
+            border-radius: 10px;
+            color: #e0ffff;
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 10px;
+            width: 200px;
+        }
+
+        .player-input select {
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid var(--accent1);
+            border-radius: 10px;
+            color: #e0ffff;
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 10px;
+            width: 200px;
+        }
+
+        .add-player, .start-game {
+            background: linear-gradient(145deg, #01161b, #02343f);
+            border: 2px solid var(--accent1);
+            border-radius: 15px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(0,240,255,0.4);
+            margin: 10px;
+        }
+
+        .add-player:hover, .start-game:hover:not(:disabled) {
+            background: var(--accent1);
+            color: #000;
+            box-shadow: 0 0 40px rgba(0,240,255,0.8);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid var(--accent1);
+            border-radius: 10px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: var(--accent1);
+            color: #000;
+        }
+
+        .roles {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-option {
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            color: #aaa;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-option.selected {
+            border-color: var(--accent1);
+            color: var(--accent1);
+            box-shadow: 0 0 15px rgba(0,240,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <a href="menu.html" class="back-button">← Назад</a>
+    <div class="lobby">
+        <h1 class="title">ЛОББИ</h1>
+        <div class="player-setup">
+            <div class="player-input">
+                <input type="text" id="playerName" placeholder="Имя игрока">
+                <select id="playerRole">
+                    <option value="">Выберите роль</option>
+                    <option value="Хакер">Хакер</option>
+                    <option value="Корпорат">Корпорат</option>
+                    <option value="Кибернетик">Кибернетик</option>
+                    <option value="Торговец">Торговец</option>
+                    <option value="Бандит">Бандит</option>
+                    <option value="Информатор">Информатор</option>
+                </select>
+            </div>
+            <button class="add-player" onclick="addPlayer()">Добавить игрока</button>
+        </div>
+        <div id="playersList"></div>
+        <button class="start-game" onclick="startGame()">Начать игру</button>
+    </div>
+
+    <script>
+        let players = [];
+
+        function addPlayer() {
+            const name = document.getElementById('playerName').value.trim();
+            const role = document.getElementById('playerRole').value;
+            if (name && role) {
+                // Проверка на уникальность роли
+                if (players.some(p => p.role === role)) {
+                    alert('Эта роль уже выбрана другим игроком!');
+                    return;
+                }
+                const color = getUniqueColor();
+                players.push({ name, role, color });
+                updatePlayersList();
+                updateRoleOptions();
+                document.getElementById('playerName').value = '';
+                document.getElementById('playerRole').value = '';
+            }
+        }
+
+        function updatePlayersList() {
+            const list = document.getElementById('playersList');
+            list.innerHTML = players.map((p, i) => `
+                <div class="player-input">
+                    <span style="color:${p.color}">${p.name} - ${p.role}</span>
+                    <button onclick="removePlayer(${i})" style="background: rgba(255,0,0,0.5); border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Удалить</button>
+                </div>
+            `).join('');
+            updateStartButton();
+        }
+
+        function updateRoleOptions() {
+            const select = document.getElementById('playerRole');
+            const options = select.querySelectorAll('option');
+            options.forEach(option => {
+                if (option.value && players.some(p => p.role === option.value)) {
+                    option.disabled = true;
+                    option.style.color = '#666';
+                } else {
+                    option.disabled = false;
+                    option.style.color = '#e0ffff';
+                }
+            });
+        }
+
+        function updateStartButton() {
+            const startBtn = document.querySelector('.start-game');
+            if (players.length >= 2) {
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                startBtn.style.cursor = 'pointer';
+            } else {
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.5';
+                startBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1);
+            updatePlayersList();
+            updateRoleOptions();
+        }
+
+        function startGame() {
+            if (players.length >= 2) {
+                localStorage.setItem('players', JSON.stringify(players));
+                window.location.href = 'game.html';
+            } else {
+                alert('Нужно минимум 2 игрока для начала игры!');
+            }
+        }
+
+        function getUniqueColor() {
+            const colors = ['#00f0ff', '#ff4df0', '#8aff9a', '#ffd36b', '#ff6b6b', '#4ecdc4'];
+            const usedColors = players.map(p => p.color);
+            const availableColors = colors.filter(c => !usedColors.includes(c));
+            if (availableColors.length > 0) {
+                return availableColors[Math.floor(Math.random() * availableColors.length)];
+            } else {
+                // Если все цвета использованы, возвращаем случайный (хотя это маловероятно с 6 цветами и 6 игроками)
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+        }
+    </script>
+</body>
+</html>

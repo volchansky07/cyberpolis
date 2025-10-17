@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Киберполис — Меню</title>
+    <style>
+        :root {
+            --accent1: #00f0ff;
+            --accent2: #ff4df0;
+            --accent3: #8aff9a;
+            --accent4: #ffd36b;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #050a10 0%, #000 100%);
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            color: #e0ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .menu {
+            text-align: center;
+            max-width: 700px;
+            padding: 40px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vmin, 4rem);
+            color: var(--accent1);
+            text-shadow: 0 0 30px var(--accent1);
+            margin-bottom: 40px;
+        }
+
+        .menu-button {
+            display: block;
+            background: linear-gradient(145deg, #01161b, #02343f);
+            border: 2px solid var(--accent1);
+            border-radius: 15px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 20px 40px;
+            margin: 15px auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(0,240,255,0.4);
+            text-decoration: none;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .menu-button:hover {
+            background: var(--accent1);
+            color: #000;
+            box-shadow: 0 0 40px rgba(0,240,255,0.8);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid var(--accent1);
+            border-radius: 10px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: var(--accent1);
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Назад</a>
+    <div class="menu">
+        <h1 class="title">МЕНЮ</h1>
+        <a href="about.html" class="menu-button">Об игре</a>
+        <a href="rules.html" class="menu-button">Правила и механика</a>
+        <a href="lobby.html" class="menu-button">Играть</a>
+    </div>
+</body>
+</html>

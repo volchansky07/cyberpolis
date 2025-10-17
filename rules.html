@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Киберполис — Правила и механика</title>
+    <style>
+        :root {
+            --accent1: #00f0ff;
+            --accent2: #ff4df0;
+            --accent3: #8aff9a;
+            --accent4: #ffd36b;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #050a10 0%, #000 100%);
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            color: #e0ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .content {
+            max-width: 900px;
+            padding: 40px;
+            text-align: left;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vmin, 4rem);
+            color: var(--accent1);
+            text-shadow: 0 0 30px var(--accent1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent1);
+            text-shadow: 0 0 20px var(--accent1);
+            margin-bottom: 10px;
+        }
+
+        .text {
+            font-size: clamp(0.9rem, 1.8vmin, 1.1rem);
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        .back-button {
+            background: linear-gradient(145deg, #01161b, #02343f);
+            border: 2px solid var(--accent1);
+            border-radius: 15px;
+            color: var(--accent1);
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(0,240,255,0.4);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .back-button:hover {
+            background: var(--accent1);
+            color: #000;
+            box-shadow: 0 0 40px rgba(0,240,255,0.8);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1 class="title">ПРАВИЛА И МЕХАНИКА</h1>
+
+        <div class="section">
+            <h2 class="section-title">Цель игры</h2>
+            <p class="text">Захватить как можно больше районов Киберполиса, накапливая кредиты, влияние и ресурсы. Игра заканчивается, когда все районы заняты или один игрок достигает определенного уровня доминирования.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Роли игроков</h2>
+            <p class="text">Каждый игрок выбирает одну из ролей: Хакер, Корпорат, Кибернетик, Торговец, Бандит, Информатор. Каждая роль имеет уникальные способности и стартовые ресурсы.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Ход игры</h2>
+            <p class="text">Игроки ходят по очереди. Каждый ход включает бросок кубика для перемещения по доске, взаимодействие с районами (покупка, захват, торговля) и использование специальных способностей роли.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Районы и ресурсы</h2>
+            <p class="text">Доска разделена на районы: Центр связи, Техно-рынок, Кибербар и т.д. Каждый район дает определенные бонусы и требует ресурсов для захвата.</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Победа</h2>
+            <p class="text">Игрок побеждает, контролируя большинство районов или накапливая максимальное количество кредитов и влияния.</p>
+        </div>
+
+        <a href="menu.html" class="back-button">← Назад</a>
+    </div>
+</body>
+</html>

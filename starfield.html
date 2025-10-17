@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Успокаивающее звездное поле</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            cursor: none;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="starfield"></canvas>
+    <script>
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const stars = [];
+        const numStars = 200;
+        let mouseX = canvas.width / 2;
+        let mouseY = canvas.height / 2;
+
+        // Создание звезд
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                z: Math.random() * 1000,
+                size: Math.random() * 2 + 1,
+                speed: Math.random() * 0.5 + 0.1
+            });
+        }
+
+        // Обновление позиции мыши
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Анимация
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                // Параллакс эффект на основе позиции мыши
+                const parallaxX = (mouseX - canvas.width / 2) * (star.z / 1000) * 0.1;
+                const parallaxY = (mouseY - canvas.height / 2) * (star.z / 1000) * 0.1;
+
+                star.x += parallaxX * star.speed;
+                star.y += parallaxY * star.speed;
+
+                // Обертывание экрана
+                if (star.x > canvas.width) star.x = 0;
+                if (star.x < 0) star.x = canvas.width;
+                if (star.y > canvas.height) star.y = 0;
+                if (star.y < 0) star.y = canvas.height;
+
+                // Рисование звезды
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${1 - star.z / 1000})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Обновление размера canvas при изменении окна
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
