@@ -2,14 +2,40 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.html",
+      "src": "index.html",
       "use": "@vercel/static"
-    }
-  ],
-  "routes": [
+    },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "menu.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "about.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "rules.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "lobby.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "game.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "starfield.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "styles.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "script.js",
+      "use": "@vercel/static"
     }
   ]
 }
